@@ -133,6 +133,17 @@
             Visualization created for the Center for Environment, Community, & Equity.
         </p>
     </footer>
-
+    
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ type: 'setIframeHeight', height: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+  // Also fire whenever user clicks toggles or state paths that change layout height
+  document.addEventListener('click', () => setTimeout(sendHeight, 150));
+</script>
+    
 </body>
 </html>
