@@ -144,6 +144,22 @@
   // Also fire whenever user clicks toggles or state paths that change layout height
   document.addEventListener('click', () => setTimeout(sendHeight, 150));
 </script>
+
+<script>
+  // Check if the page is loaded inside an iframe (like WordPress)
+  if (window.self !== window.top) {
+    window.addEventListener('DOMContentLoaded', () => {
+      // Find any link or button containing "Back to Home" (or pointing to index.html) and hide it
+      const links = document.querySelectorAll('a, button');
+      links.forEach(el => {
+        if (el.textContent.toLowerCase().includes('back to home') || el.getAttribute('href') === 'index.html') {
+          el.style.display = 'none';
+        }
+      });
+    });
+  }
+</script>
+    
     
 </body>
 </html>
