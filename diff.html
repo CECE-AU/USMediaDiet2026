@@ -6,6 +6,13 @@
     <p><a href="index.html">&larr; Back to Home</a></p>
     <title>US Media Diet Change (October 2025-October 2026)</title>
     <style>
+            /* Hide the Back to Home link & top nav when embedded in WordPress */
+    body.in-iframe a[href*="index.html"],
+    body.in-iframe .back-link,
+    body.in-iframe .back-btn,
+    body.in-iframe .nav-header {
+      display: none !important;
+    }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             max-width: 1000px; 
@@ -101,13 +108,13 @@
     </style>
 </head>
 <body>
-    /* Hide the Back to Home link & top nav when embedded in WordPress */
-    body.in-iframe a[href*="index.html"],
-    body.in-iframe .back-link,
-    body.in-iframe .back-btn,
-    body.in-iframe .nav-header {
-      display: none !important;
-    }
+
+    <script>
+      if (window.self !== window.top || window.location.search.includes('embed=true')) {
+        document.body.classList.add('in-iframe');
+      }
+    </script>
+    
     <h1>Media Diet Change (October 2025-October 2026)</h1>
     <p class="subtitle">Difference in percentage who say they regularly get news from each source</p>
     
