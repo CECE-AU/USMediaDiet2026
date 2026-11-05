@@ -1,165 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Diet Research | Center for Environment, Community, & Equity</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            color: #333;
-            background-color: #f9f9f9;
-            line-height: 1.6;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Diet Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    :root {
+      --primary-teal: #00a38d;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --bg-card: #ffffff;
+      --border-light: #e2e8f0;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        h1 {
-            margin-bottom: 10px;
-            color: #111;
-        }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      background-color: #f8fafc;
+    }
 
-        .subtitle {
-            color: #666;
-            font-size: 1.1em;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+    /* When embedded inside a WordPress iframe, remove outer background & extra padding */
+    body.in-iframe {
+      background-color: transparent;
+      padding: 0;
+    }
 
-        /* CARD GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Two columns */
-            gap: 20px;
-        }
+    /* Hide the Back to Home button automatically when inside an iframe */
+    body.in-iframe .back-nav,
+    body.in-iframe .back-btn {
+      display: none !important;
+    }
 
-        /* CARD STYLES */
-        .card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 30px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-decoration: none; /* Remove link underline */
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            border-color: #bbb;
-        }
+    body.in-iframe .container {
+      box-shadow: none;
+      padding: 12px 0;
+    }
 
-        .card h2 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: #007bff;
-        }
+    .back-nav {
+      margin-bottom: 16px;
+    }
 
-        .card p {
-            color: #555;
-            font-size: 0.95em;
-            margin-bottom: 20px;
-        }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-teal);
+      padding: 6px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      background: #ffffff;
+      transition: background 0.15s ease;
+    }
 
-        .card .btn {
-            display: inline-block;
-            background: #eee;
-            color: #333;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9em;
-            text-align: center;
-        }
+    .back-btn:hover {
+      background: #f1f5f9;
+    }
 
-        .card:hover .btn {
-            background: #007bff;
-            color: white;
-        }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+    }
 
-        /* Mobile Fix */
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
-        }
+    .subtitle {
+      margin: 0 0 20px 0;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
 
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            font-size: 0.85em;
-            color: #999;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
-    </style>
+    #chart-container {
+      width: 100%;
+      min-height: 550px;
+      position: relative;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>Media Diet & changes in 2026</h1>
-        <p class="subtitle">Exploring how different demographic groups consume news media and how it shifted.</p>
-    </header>
-
-    <div class="grid">
-        <a href="media_diet_oct.html" class="card">
-            <div>
-                <h2>US Media Diet October 2026</h2>
-                <p>Where the population say they regularly get news from</p>
-            </div>
-            <div class="btn">Data Visualizations &rarr;</div>
-        </a>
-
-        <a href="diff.html" class="card">
-            <div>
-                <h2>US Media Diet Changes 2026</h2>
-                <p>Differences in where the population say they regularly get news from October 2025 to October 2026</p>
-            </div>
-            <div class="btn">Data Visualizations  &rarr;</div>
-        </a>
+  <div class="container">
+    <!-- Top navigation that will disappear inside WordPress -->
+    <div class="back-nav">
+      <a href="index.html" class="back-btn">&larr; Back to Home</a>
     </div>
 
-    <footer>
-        <p>
-            Research Data: YouGov/CECE (Oct 2025 & 2026).<br>
-            Visualization created for the Center for Environment, Community, & Equity.
-        </p>
-    </footer>
-    
-<script>
-  function sendHeight() {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'setIframeHeight', height: height }, '*');
-  }
-  window.addEventListener('load', sendHeight);
-  window.addEventListener('resize', sendHeight);
-  // Also fire whenever user clicks toggles or state paths that change layout height
-  document.addEventListener('click', () => setTimeout(sendHeight, 150));
-</script>
+    <h1>Media Consumption Dashboard</h1>
+    <p class="subtitle">Interactive survey results and demographic breakdown</p>
 
-<script>
-  // Check if the page is loaded inside an iframe (like WordPress)
-  if (window.self !== window.top) {
-    window.addEventListener('DOMContentLoaded', () => {
-      // Find any link or button containing "Back to Home" (or pointing to index.html) and hide it
-      const links = document.querySelectorAll('a, button');
-      links.forEach(el => {
-        if (el.textContent.toLowerCase().includes('back to home') || el.getAttribute('href') === 'index.html') {
-          el.style.display = 'none';
+    <!-- Main Visualization Mount Point -->
+    <div id="chart-container"></div>
+  </div>
+
+  <!-- 1. Iframe Detection & WordPress Auto-Resize Script -->
+  <script>
+    (function() {
+      // Detect if running inside an iframe (WordPress embed)
+      const isIframe = (window.self !== window.top);
+      if (isIframe) {
+        document.body.classList.add('in-iframe');
+      }
+
+      // Fallback: Also scan and hide any link that says "Back to Home" or links to index.html
+      window.addEventListener('DOMContentLoaded', () => {
+        if (isIframe) {
+          document.querySelectorAll('a, button').forEach(el => {
+            const text = (el.textContent || '').toLowerCase();
+            const href = el.getAttribute('href') || '';
+            if (text.includes('back to home') || href === 'index.html' || href === './index.html') {
+              el.style.display = 'none';
+            }
+          });
         }
       });
-    });
-  }
-</script>
-    
-    
+
+      // Send dynamic height to parent WordPress page so iframe never clips or scrolls
+      function sendHeight() {
+        const height = document.documentElement.scrollHeight;
+        window.parent.postMessage({ type: 'setIframeHeight', height: height }, '*');
+      }
+
+      window.addEventListener('load', sendHeight);
+      window.addEventListener('resize', sendHeight);
+      document.addEventListener('click', () => setTimeout(sendHeight, 150));
+    })();
+  </script>
+
+  <!-- 2. Your D3 / Chart Script Goes Below -->
+  <script>
+    // Paste your existing D3.js or data-loading logic here, or paste your full HTML
+    // file in the chat and I will merge it for you!
+  </script>
+
 </body>
 </html>
